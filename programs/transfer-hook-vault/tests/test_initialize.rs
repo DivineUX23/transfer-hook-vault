@@ -23,7 +23,6 @@ fn test_initialize() {
     svm.add_program(program_id, bytes).unwrap();
     svm.airdrop(&payer.pubkey(), 1_000_000_000).unwrap();
     
-
     let admin = payer.pubkey();
 
     let config = Pubkey::find_program_address(
