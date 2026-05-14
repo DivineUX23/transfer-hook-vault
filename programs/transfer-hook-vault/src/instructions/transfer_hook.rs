@@ -61,15 +61,17 @@ impl <'info>TransferHook<'info> {
             let start_offset = 13 + (i * 40);
 
             let user_bytes = &raw_whitelist[start_offset..start_offset + 32];
-            let amount_start = start_offset + 32;
-            let amount_bytes = &raw_whitelist[amount_start..amount_start + 8];
+            let amount_bytes = &raw_whitelist[start_offset + 32..start_offset + 40];
+            
+            let mut amount_int_bytes = [0u8; 8];
+            amount_int_bytes.copy_from_slice(&amount_bytes);
 
             if user_bytes == self.source_ata.owner.as_ref() {
-                
-                let amount_int = u64::from_be_bytes(*amount_bytes)
 
-                if amount_bytes < &amount.to_le_bytes() {
-                    panic!("Insufficient Funds")
+                let amount_int = u64::from_be_bytes(amount_int_bytes);
+
+                if amount_int < amount {
+                    panic!("Insufficient Funds");
                 }
 
                 user_exists = true;
