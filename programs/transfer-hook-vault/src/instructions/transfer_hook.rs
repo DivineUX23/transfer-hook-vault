@@ -65,6 +65,8 @@ impl <'info>TransferHook<'info> {
             let amount_bytes = &raw_whitelist[amount_start..amount_start + 8];
 
             if user_bytes == self.source_ata.owner.as_ref() {
+                
+                let amount_int = u64::from_be_bytes(*amount_bytes)
 
                 if amount_bytes < &amount.to_le_bytes() {
                     panic!("Insufficient Funds")
