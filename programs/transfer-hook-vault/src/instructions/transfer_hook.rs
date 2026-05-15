@@ -1,4 +1,4 @@
-// I am using Balance over mint.supply for the sake of this project in real world mint.supply will be used for checking wales.
+// I am using Balance over mint.supply for the learnig experience of this project in real world mint.supply will be used for checking wales.
 
 use anchor_lang::prelude::*;
 use anchor_spl::{
