@@ -1,7 +1,7 @@
 // UncheckedAccount FOR WHITELIST WAS USED BECAUSE OF THE LEARNING EXPRIENCE. well I'm actually jobless so I have time for this
 
 use anchor_lang::{prelude::*, system_program};
-use crate::{Config, CONFIG_SEED};
+use crate::{Config, CONFIG_SEED, BALANCE_SEED, Balance};
 
 #[derive(Accounts)]
 pub struct OpsWhitelist<'info> {
@@ -18,6 +18,12 @@ pub struct OpsWhitelist<'info> {
     /// CHECK: checks are done manually in the code below
     #[account(mut)]
     pub whitelist: UncheckedAccount<'info>,
+
+    #[account(
+        seeds = [BALANCE_SEED, whitelist.key().as_ref()],
+        bump
+    )]
+    pub balance: Account<'info, Balance>,
 
     pub system_program: Program<'info, System>
 
@@ -72,6 +78,11 @@ impl <'info>OpsWhitelist<'info> {
         let new_total = (total_users + 1) as u32;
         raw_whitelist[9..13].copy_from_slice(&new_total.to_le_bytes());
 
+
+        // update balance:
+
+        self.balance.amount += amount;
+
         Ok(())
     }
 
@@ -101,6 +112,15 @@ impl <'info>OpsWhitelist<'info> {
                 let last_start = last_end - 40 as usize;
 
                 if user_bytes == user.as_ref() {
+                    {
+                        // remove from balance first:
+                        let mut user_balance_bytes = [0u8; 8];
+                        user_balance_bytes.copy_from_slice(&raw_whitelist[start_offset + 32..start_offset + 40]);
+
+                        let user_balance: u64 =  u64::from_le_bytes(user_balance_bytes);
+
+                        self.balance.amount -= user_balance;
+                    }
 
                     if user_bytes != &raw_whitelist[last_start..last_start + 32] {
                         
@@ -128,7 +148,7 @@ impl <'info>OpsWhitelist<'info> {
                 panic!("user does not exist!");
 
             }
-        } 
+        }
 
         // reduce size;
         self.realloc_whitelist(false)?;

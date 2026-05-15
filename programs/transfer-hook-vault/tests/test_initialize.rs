@@ -35,6 +35,11 @@ fn test_initialize() {
         &program_id
     ).0;
 
+    let balance = Pubkey::find_program_address(
+        &[b"Whitelist", whitelist.as_ref()],
+        &program_id
+    ).0;
+
     let instruction = Instruction::new_with_bytes(
         program_id,
         &transfer_hook_vault::instruction::InitializeWhitelist {}.data(),
@@ -42,6 +47,7 @@ fn test_initialize() {
             admin : admin,
             config : config,
             whitelist: whitelist,
+            balance: balance,
             system_program: SYSTEM_PROGRAM_ID
 
         }.to_account_metas(None),

@@ -13,9 +13,15 @@ pub struct WhitelistEntry {
     pub amount: u64,
 }
 
-
 #[account]
 pub struct Whitelist {
     pub bump: u8,
     pub accounts: Vec<WhitelistEntry>
+}
+
+#[derive(InitSpace)]
+#[account]
+pub struct Balance {
+    pub amount: u64,
+    pub bump: u8,
 }

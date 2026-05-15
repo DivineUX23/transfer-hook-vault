@@ -1,3 +1,5 @@
+// I am using Balance over mint.supply for the sake of this project in real world mint.supply will be used for checking wales.
+
 use anchor_lang::prelude::*;
 use anchor_spl::{
     token_2022::spl_token_2022::{
@@ -11,7 +13,7 @@ use anchor_spl::{
     token_interface::{Mint, TokenAccount},
 };
 
-use crate::WHITELIST_SEED;
+use crate::{WHITELIST_SEED, BALANCE_SEED, Balance};
 
 #[derive(Accounts)]
 pub struct TransferHook<'info> {
@@ -29,7 +31,7 @@ pub struct TransferHook<'info> {
     #[account(
         token::mint = mint
     )]
-    pub destination_atas: InterfaceAccount<'info, TokenAccount>,
+    pub destination_ata: InterfaceAccount<'info, TokenAccount>,
 
     /// CHECK: check done in impl below
     #[account(
@@ -38,6 +40,12 @@ pub struct TransferHook<'info> {
     )]
     pub whitelist: UncheckedAccount<'info>,
 
+    #[account(
+        seeds = [BALANCE_SEED, whitelist.key().as_ref()],
+        bump
+    )]
+    pub balance: Account<'info, Balance>,
+
 }
 
 impl <'info>TransferHook<'info> {
@@ -45,6 +53,10 @@ impl <'info>TransferHook<'info> {
     pub fn transfer_hook(&mut self, amount: u64) -> Result<()> {
 
         self.is_transferring()?;
+
+        // check wales first to prevent cu wastage on finding account if amount is wrong.
+        self.is_whale(amount)?;
+
 
         let mut user_exists = false;
 
@@ -68,7 +80,7 @@ impl <'info>TransferHook<'info> {
 
             if user_bytes == self.source_ata.owner.as_ref() {
 
-                let amount_int = u64::from_be_bytes(amount_int_bytes);
+                let amount_int = u64::from_le_bytes(amount_int_bytes);
 
                 if amount_int < amount {
                     panic!("Insufficient Funds");
@@ -99,7 +111,19 @@ impl <'info>TransferHook<'info> {
         let token_extension = account.get_extension_mut::<TransferHookAccount>()?;
 
         if !bool::from(token_extension.transferring) {
-            panic!("Not Transferring")
+            panic!("Not Transferring");
+        }
+
+        Ok(())
+    }
+
+    pub fn is_whale(&mut self, amount: u64) -> Result<()> {
+
+        let max_balance = self.balance.amount/2;
+
+        if self.destination_ata.amount > (max_balance) || 
+        (self.destination_ata.amount + amount) > (max_balance) {
+            panic!("Not Transferring");
         }
 
         Ok(())

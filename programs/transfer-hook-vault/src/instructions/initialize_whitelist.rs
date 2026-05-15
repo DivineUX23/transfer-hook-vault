@@ -1,5 +1,7 @@
 use anchor_lang::prelude::*;
-use crate::{Whitelist, Config, CONFIG_SEED, WHITELIST_SEED};
+use crate::{Whitelist, Config, Balance, 
+    CONFIG_SEED, WHITELIST_SEED, BALANCE_SEED
+};
 
 #[derive(Accounts)]
 pub struct InitializeWhitelist<'info> {
@@ -24,6 +26,16 @@ pub struct InitializeWhitelist<'info> {
     )]
     pub whitelist: Account<'info, Whitelist>,
 
+    #[account(
+        init,
+        payer = admin,
+        space = Balance::DISCRIMINATOR.len() + Balance::INIT_SPACE,
+        seeds = [BALANCE_SEED, whitelist.key().as_ref()],
+        bump
+    )]
+    pub balance: Account<'info, Balance>,
+
+
     pub system_program: Program<'info, System>
 }
 
@@ -39,6 +51,11 @@ impl <'info> InitializeWhitelist <'info> {
         self.whitelist.set_inner(Whitelist { 
             accounts: vec![], 
             bump: bumps.whitelist
+        });
+
+        self.balance.set_inner(Balance { 
+            amount: 0, 
+            bump: bumps.balance
         });
 
         Ok(())

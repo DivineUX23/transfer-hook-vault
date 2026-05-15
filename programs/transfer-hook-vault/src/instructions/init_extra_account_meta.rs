@@ -5,7 +5,7 @@ use spl_tlv_account_resolution::{
     state::ExtraAccountMetaList};
 use spl_transfer_hook_interface::instruction::ExecuteInstruction;
 
-use crate::{ID, WHITELIST_SEED, EXTRA_ACCOUNT_META};
+use crate::{ID, WHITELIST_SEED, EXTRA_ACCOUNT_META, BALANCE_SEED};
 
 #[derive(Accounts)]
 pub struct InitializeAccountMetaList<'info> {
@@ -43,18 +43,31 @@ impl <'info> InitializeAccountMetaList<'info> {
 
     pub fn extra_account_meta() -> Result<Vec<ExtraAccountMeta>> {
         
-        let (address, _bump) = Pubkey::find_program_address(
+        let (whitelist_address, _bump) = Pubkey::find_program_address(
             &[WHITELIST_SEED], 
+            &ID
+        );
+
+        let (balance_address, _bump) = Pubkey::find_program_address(
+            &[BALANCE_SEED, whitelist_address.key().as_ref()], 
             &ID
         );
         
         Ok(
             vec![
                 ExtraAccountMeta::new_with_pubkey(
-                    &address.to_bytes().into(), 
+                    &whitelist_address.to_bytes().into(), 
+                    false, false
+                ).unwrap(),
+
+                ExtraAccountMeta::new_with_pubkey(
+                    &balance_address.to_bytes().into(), 
                     false, false
                 ).unwrap(),
             ]
+
         )
+
+
     }
 }

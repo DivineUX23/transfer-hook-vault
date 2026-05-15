@@ -1,7 +1,7 @@
 use anchor_lang::prelude::*;
 use anchor_spl::token_interface::{Mint, TokenInterface};
 
-use crate::{CONFIG_SEED, Config};
+use crate::{CONFIG_SEED, Config, ID};
 
 #[derive(Accounts)]
 pub struct MintToken <'info> {
@@ -19,6 +19,8 @@ pub struct MintToken <'info> {
         payer = user,
         mint::decimals = 6,
         mint::authority = user,
+        extensions::transfer_hook::program_id = ID,
+        extensions::transfer_hook::authority = user
     )]
     pub mint: InterfaceAccount<'info, Mint>,
 
