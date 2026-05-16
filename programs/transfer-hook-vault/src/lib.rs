@@ -27,16 +27,24 @@ pub mod transfer_hook_vault {
         ctx.accounts.remove_whitelist(user)
     }
 
+    pub fn init_mint(ctx: Context<MintToken>) -> Result<()> {
+        ctx.accounts.init_mint()
+    }
+    
+    pub fn init_distribute(ctx: Context<DistributeToken>, amount: u64) -> Result<()> {
+        ctx.accounts.init_distribute(amount)
+    }
+
     pub fn init_transfer_hook(ctx: Context<InitializeAccountMetaList>) -> Result<()> {
         ctx.accounts.init_transfer_hook()
     }
 
-    pub fn init_mint(ctx: Context<MintToken>) -> Result<()> {
-        ctx.accounts.init_mint()
-    }
-
     pub fn transfer_hook(ctx: Context<TransferHook>, amount: u64) -> Result<()> {
         ctx.accounts.transfer_hook(amount)
+    }
+
+    pub fn send_token(ctx: Context<SendToken>, amount: u64) -> Result<()> {
+        ctx.accounts.send_token(amount)
     }
 
 }

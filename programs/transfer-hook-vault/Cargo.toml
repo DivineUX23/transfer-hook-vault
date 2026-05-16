@@ -21,14 +21,15 @@ custom-panic = []
 
 
 [dependencies]
-anchor-lang = "1.0.2"
+anchor-lang = { version = "1.0.2", features = ["init-if-needed"] }
 anchor-spl = "1.0.2"
 solana-pubkey = "4.2.0"
 spl-tlv-account-resolution = "0.11.1"
 spl-transfer-hook-interface = "2.1.0"
 
 [dev-dependencies]
-litesvm = "0.10.0"
+litesvm = "0.12.0"
+litesvm-token = "0.12.0"
 solana-message = "3.0.1"
 solana-transaction = "3.0.2"
 solana-signer = "3.0.0"

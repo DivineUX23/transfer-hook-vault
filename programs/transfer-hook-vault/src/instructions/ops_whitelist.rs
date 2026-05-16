@@ -20,6 +20,7 @@ pub struct OpsWhitelist<'info> {
     pub whitelist: UncheckedAccount<'info>,
 
     #[account(
+        mut,
         seeds = [BALANCE_SEED, whitelist.key().as_ref()],
         bump
     )]

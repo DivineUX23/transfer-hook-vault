@@ -119,11 +119,15 @@ impl <'info>TransferHook<'info> {
 
     pub fn is_whale(&mut self, amount: u64) -> Result<()> {
 
+        if self.balance.amount == 0 {
+            return Ok(())
+        }
+
         let max_balance = self.balance.amount/2;
 
         if self.destination_ata.amount > (max_balance) || 
         (self.destination_ata.amount + amount) > (max_balance) {
-            panic!("Not Transferring");
+            panic!("Whale is not allowed");
         }
 
         Ok(())
