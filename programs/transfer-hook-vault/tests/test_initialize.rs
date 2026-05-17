@@ -217,7 +217,7 @@ fn test_initialize() {
 
 
 
-    /// CREATE ATA's:
+    // CREATE ATA's:
     
     let source_ata = CreateAssociatedTokenAccount::new(&mut svm, &payer, &mint)
         .owner(&admin)
@@ -325,7 +325,7 @@ fn test_initialize() {
 
     let instruction = Instruction::new_with_bytes(
         program_id,
-        &transfer_hook_vault::instruction::TransferHook {
+        &transfer_hook_vault::instruction::Execute {
             amount: amount,
         }.data(),
         transfer_hook_vault::accounts::TransferHook {
@@ -352,7 +352,8 @@ fn test_initialize() {
 
 
 
-
+    // EXPERIMNET: TEST SEND
+    /* 
 
     // TEST SEND PASS
     let amount_send: u64 = 8000;
@@ -369,10 +370,10 @@ fn test_initialize() {
         6
     ).unwrap();
 
-    instruction.accounts.push(AccountMeta::new_readonly(program_id, false));
     instruction.accounts.push(AccountMeta::new_readonly(extra_account_meta_list, false));
     instruction.accounts.push(AccountMeta::new_readonly(whitelist, false));
     instruction.accounts.push(AccountMeta::new_readonly(balance, false));
+    instruction.accounts.push(AccountMeta::new_readonly(program_id, false));
 
 
     let blockhash = svm.latest_blockhash();
@@ -399,7 +400,7 @@ fn test_initialize() {
 
     assert_eq!(source_data.base.amount, 2000);
     assert_eq!(destination_data.base.amount, amount_send);
-
+    */
 
     /* 
     let res = svm.send_transaction(tx).unwrap();
@@ -428,7 +429,7 @@ fn test_initialize() {
     */
 
 
-
+    /* 
     // TEST SEND FAIL
 
     let amount_send: u64 = 100;
@@ -481,7 +482,7 @@ fn test_initialize() {
 
     assert_eq!(source_data.base.amount, 1900);
     assert_eq!(destination_data.base.amount, 8100);
-
+    */
 
 
 

@@ -1,5 +1,5 @@
 use anchor_lang::{prelude::*, solana_program::{program::invoke, instruction::{Instruction, AccountMeta}}};
-use anchor_spl::{token_2022::{TransferChecked, transfer_checked}, token_interface::{Mint, TokenAccount, TokenInterface}};
+use anchor_spl::{token_interface::{Mint, TokenAccount, TokenInterface}};
 
 #[derive(Accounts)]
 pub struct SendToken <'info> {

@@ -39,9 +39,15 @@ pub mod transfer_hook_vault {
         ctx.accounts.init_transfer_hook()
     }
 
-    pub fn transfer_hook(ctx: Context<TransferHook>, amount: u64) -> Result<()> {
+    pub fn execute(ctx: Context<TransferHook>, amount: u64) -> Result<()> {
         ctx.accounts.transfer_hook(amount)
     }
 
+    /* 
+    pub fn send_token(ctx: Context<SendToken>, amount: u64) -> Result<()> {
+        ctx.accounts.send_token(amount)
+    }
+    */
 
+    
 }
